@@ -4,14 +4,31 @@
   </head>
   <body>
 
+
+    <section id="code-input" style="background-color: red;">
+      <h1> Enter code here </h1>
+      <textarea id="mycode" cols="20">
+        
+      </textarea>
+    </section>
+
+    <button id="runcode">Run code</button>
+    <button id="savecode">Save code</button>
+
+    <section id="code-output" style="background-color: blue;">
+      <h1> See output here </h1>
+    </section>
+
     # WebSockets Chat App
-    <section id="chat-log">
+    <section id="chat-log" style="background-color: green;">
     <tbody>
       <tr>
         <td></td>
       </tr>
     </tbody>
     </section>
+
+
 
     <input type="text" id="message">
     <button id="disconnect">Disconnect</button>
@@ -65,6 +82,23 @@
             socket.send(createMessage("username", uname));
             break;
 
+          case "codeSave":
+
+            break;
+
+          case "codeRun":
+
+            break;
+
+          case "codeInputReceive":
+
+            break;
+
+          case "codeOutputReceive":
+          console.log("got it")
+            $("#code-output").append("<p>" + obj.text + "</p>");
+            break;
+
           default:
 
           break;
@@ -100,6 +134,13 @@
 
     $('#message').keypress(function(event) {
       if (event.keyCode == '13') { send(); }
+    });
+
+    $('#runcode').click(function() {
+      // console.log($("#mycode").val());
+      msg = createMessage("codeRun", $("#mycode").val());
+      console.log(msg);
+      socket.send(msg);
     });
 
     //Entry

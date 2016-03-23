@@ -37,6 +37,12 @@ EventMachine.run do
       puts msg.inspect
       client = @clients.detect {|elem| elem[:sock] == ws}
       case msg["type"]
+      when "codeRun"
+        # binding.pry
+        puts eval(msg["text"])
+        @clients.each do |cli|
+            socket_send( cli[:sock], "codeOutputReceive", eval(msg["text"])) 
+        end
       when "text"
         if client[:uname] == nil
           ws.close
@@ -44,7 +50,7 @@ EventMachine.run do
         else
           puts "sending message"
           @clients.each do |cli|
-          socket_send( cli[:sock], "text", "#{client[:uname]}:  " + msg["text"]) if cli != client
+            socket_send( cli[:sock], "text", "#{client[:uname]}:  " + msg["text"]) if cli != client
           end
         end
       when "username"   
