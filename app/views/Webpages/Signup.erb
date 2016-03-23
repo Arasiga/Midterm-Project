@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Sign up page</title>
+  
+</head>
+<body>
+
+<div class="vid-container">
+
+  <video id="Video1" class="bgvid back" autoplay="false" muted="muted" preload="auto" loop>
+      <source src="https://s3-us-west-2.amazonaws.com/coverr/mp4/Aloha-Mundo.mp4" type="video/mp4">
+  </video>
+
+  <div class="title_signup">
+    <h1><font color="white"> Sign up for CodePad </font></h1>
+  </div>
+
+  <div class="container_signup">
+
+    <div class="box_signup">
+      <h3> Please provide the following information to create your account </h3>
+      <% if @user && @user.errors.any? %>
+        <div>
+          <strong> Some issues while creating account, please fix the following:
+          </strong>
+          <ul>
+            <% @user.errors.full_messages.each do |x| %>
+            <li><%= x %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    <form action="/Webpages/Signup" method="post" id="signup_form">
+    <ul style="list-style-type: none">
+      <li>
+        <label>First Name:</label><input type="text" name="first_name" placeholder="First name" value="<%= @user && @user.first_name%>"required/>
+      </li>
+      <li>
+        <label>Last Name:</label><input type="text" name="last_name" placeholder="Last name" value="<%= @user && @user.last_name%>" required/>
+      </li>
+      <li>
+        <label> Country:</label><input type="text" name="country" placeholder="Country" value="<%= @user && @user.country%>"/>
+      </li>
+      <li>
+        <label>Email: </label><input type="email" name="email" placeholder="Email" value="<%= @user && @user.email%>" required/>
+      </li>
+      <li>
+        <label>Username: </label><input type="text" name="username" placeholder="Enter a username that others can identify you with" value="<%= @user && @user.username%>"/>
+      </li>
+      <li>
+        <label>Password:</label><input type="password" name="password" placeholder="Password" />
+      </li>
+      <li>
+        <label>Repeat password:</label><input type="password" name="repeat_password" placeholder="Please confirm password"/>
+      </li>
+      <button> Create Account! </button>
+      <p><a href="/Webpages/about"><span> About us</span></a></p>
+    </div>
+    </ul>
+    </form>
+  </div>
+</div>
+
+  
+$("#signup_form").validate();
+  <!-- <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script> -->
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
