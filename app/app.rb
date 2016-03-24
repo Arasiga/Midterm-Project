@@ -6,14 +6,23 @@ require 'sinatra/base'
 require 'em-websocket'
 require 'json'
 
-def socket_send(client, type, text)
-  client[:sock].send(JSON.generate({type: type, text: text}))
-  puts "Sending to #{client[:uname].to_s}:"
+def socket_send(sock, type, text)
+  sock.send(JSON.generate({type: type, text: text}))
+  # puts "Sending to #{client[:uname].to_s}:"
   puts JSON.generate({type: type, text: text})
 end
 
-def get_client_from_socket(client_list, socket)
-  client_list.detect {|elem| elem[:sock] == socket}
+def get_client_from_param(client_list, param, obj)
+  client_list.detect {|elem| elem[param] == obj}
+end
+
+def auth_error(sock)
+  socket_send(sock, "authError", "")
+  sock.close
+end
+
+def user_connected? (user)
+  get_client_from_param(@clients, :user, user) != nil
 end
 
 EventMachine.run do
@@ -26,23 +35,46 @@ EventMachine.run do
 
   EM::WebSocket.start(:host => '0.0.0.0', :port => '3001') do |ws|
     ws.onopen do |handshake|
-      client = {sock: ws, uname: nil}
-      @clients << client
-      puts "new client connected"
-      socket_send(client, "text", "Connected to #{handshake.path}.")
+      binding.pry
+      prefix, rawcookie = handshake.headers['Cookie'].split('=')
+      decoded_cookie = Marshal.load(Base64.decode64(Rack::Utils.unescape(rawcookie.split('--').first)))  
+      binding.pry
+      if (!decoded_cookie["user_id"])
+        auth_error(ws)
+      else
+        user = User.find(decoded_cookie["user_id"])
+        if (!user)
+          auth_error(ws)
+        else
+          if (user_connected?(user))
+            socket_send(ws, "text", "Already connected")
+            ws.close
+          else
+            client = {sock: ws, user: user}
+            @clients << client
+            puts "new client connected"
+            socket_send(client[:sock], "text", "Connected to #{handshake.path}.")
+          end
+        end
+      end
     end
 
     ws.onclose do
-      client = get_client_from_socket(@clients, ws)
-      socket_send(client, "text", "Closed")
+      client = get_client_from_param(@clients, :sock, ws)
+      socket_send(client[:sock], "text", "Closed")
       puts "closing"
       @clients.delete(client)
     end
 
     ws.onmessage do |msg|
+      binding.pry
       msg = JSON.parse(msg)
-      client = get_client_from_socket(@clients, ws)
-      puts "Received Message from #{client[:uname].to_s}"
+      client = get_client_from_param(@clients, :sock, ws)
+      if (!client)
+        auth_error(ws)
+        return
+      end
+      puts "Received Message from #{client[:user].username.to_s}"
       puts msg.inspect
       case msg["type"]
       when "codeRun"
@@ -56,28 +88,14 @@ EventMachine.run do
         # puts eval(msg["text"])
         # binding.pry
         @clients.each do |cli|
-            socket_send(cli, "codeOutputReceive", evaluation) 
+            socket_send(cli[:sock], "codeOutputReceive", evaluation) 
         end
-      when "text", "codeInputReceive"
-        if client[:uname] == nil
-          ws.close
-          puts "need username"
-          @clients.delete(client)          
-        else
-          puts "sending message:"
-          text_prefix = msg["type"] == "text" ? "#{client[:uname]}:  " : ""
-          text = text_prefix + msg["text"]
-          @clients.each do |cli|
-            socket_send( cli, "#{msg["type"]}", text) if cli != client
-          end
-        end
-      when "username"   
-        name_desired = msg["text"]
-        puts "got uname"
-        if @clients.detect {|cli| cli[:uname] == name_desired} == nil
-          client[:uname] = msg["text"]
-        else 
-          socket_send(client, "command_username", "")
+      when "text", "codeInputReceive"       
+        puts "sending message:"
+        text_prefix = msg["type"] == "text" ? "#{client[:user].username.to_s}:  " : ""
+        text = text_prefix + msg["text"]
+        @clients.each do |cli|
+          socket_send( cli[:sock], "#{msg["type"]}", text) if cli != client
         end
       end
     end

@@ -35,7 +35,6 @@
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script>
-      var uname;
       function addMessage(msg) {
         $("#chat-log").append("<p>" + msg + "</p>");
       }
@@ -52,8 +51,6 @@
 
           socket.onopen = function() {
             addMessage("Socket Status: " + socket.readyState + " (open)");
-            msg = createMessage("username", uname);
-            socket.send(msg);
           }
 
           socket.onclose = function() {
@@ -77,11 +74,6 @@
             addMessage(obj.text);
             break;
 
-          case "command_username":
-            uname = prompt("Username taken: re-enter.")
-            socket.send(createMessage("username", uname));
-            break;
-
           case "codeSave":
 
             break;
@@ -98,6 +90,10 @@
           console.log("got it")
             display_txt = (obj.text).replace("\n", "<br />");
             $("#code-output").html(display_txt);
+            break;
+
+          case "authError":
+            $('body').html('AUTHENTICATION ERROR');
             break;
 
           default:
@@ -133,7 +129,7 @@
         if (!success) {
           addMessage("Failed To Send");
         } else {
-          addMessage(uname + ':  ' + text)
+          addMessage('Me:  ' + text)
         }
         $("#message").val('');
       }
@@ -152,7 +148,6 @@
 
     //Entry
     $(function() {
-     uname = prompt("Enter username");     
       connect();
     });
 
