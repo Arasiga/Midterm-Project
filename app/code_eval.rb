@@ -17,7 +17,7 @@ def safe_eval(str)
   begin
     x = eval(str)
     y = with_captured_stdout { str }
-    z = y.to_s + "            " +  x.to_s
+    z = y.to_s + "            " + "=> "+ x.to_s
     return z
   rescue Exception => error
     # binding.pry
