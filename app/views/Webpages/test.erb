@@ -145,6 +145,11 @@
       socket.send(msg);
     });
 
+    $('#mycode').keypress(function() {
+      console.log( $("#mycode").val());
+      send("codeInputReceive",  $("#mycode").val());
+    });
+
     //Entry
     $(function() {
      uname = prompt("Enter username");     
