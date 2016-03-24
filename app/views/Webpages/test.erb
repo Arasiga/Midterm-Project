@@ -35,12 +35,12 @@
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script>
+      var uname;
       function addMessage(msg) {
         $("#chat-log").append("<p>" + msg + "</p>");
       }
 
-      var socket, host;
-      var uname;
+      var socket, host;      
       host = "ws://localhost:3001";
 
       function connect() {
@@ -115,30 +115,31 @@
         return JSON.stringify(msg);
       }
 
-      function send() {
-      var text = $("#message").val();
-      if (text == '') {
-        addMessage("Please Enter a Message");
-        return;
-      }
+      function send(type, text) {  
+        try {
+          msg = createMessage(type, text);
+          socket.send(msg);
+        } catch(exception) {
+          return false;
+        }
 
-      try {
-        msg = createMessage("text", text);
-        socket.send(msg);
-        addMessage(uname + ':  ' + text)
-      } catch(exception) {
-        addMessage("Failed To Send")
-      }
-
-      $("#message").val('');
+        return true;
     }
 
     $('#message').keypress(function(event) {
-      if (event.keyCode == '13') { send(); }
+      text = $("#message").val();
+      if (event.keyCode == '13' & text != '') { 
+        success = send("text", text); 
+        if (!success) {
+          addMessage("Failed To Send");
+        } else {
+          addMessage(uname + ':  ' + text)
+        }
+        $("#message").val('');
+      }
     });
 
     $('#runcode').click(function() {
-      // console.log($("#mycode").val());
       msg = createMessage("codeRun", $("#mycode").val());
       console.log(msg);
       socket.send(msg);
