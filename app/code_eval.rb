@@ -21,10 +21,10 @@ def safe_eval(str)
     return z
   rescue Exception => error
     # binding.pry
-    x = error.message + "\n" + error.backtrace.reduce("") do |str, elem|
-      str += elem + "\n"
-      str
-    end
+    x = error.message + "\n" #+ error.backtrace.reduce("") do |str, elem|
+      # str += elem + "\n"
+      # str
+    # end
     return x
   end
 end
