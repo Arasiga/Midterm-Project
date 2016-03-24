@@ -51,14 +51,15 @@ EventMachine.run do
         @clients.each do |cli|
             socket_send( cli[:sock], "codeOutputReceive", evaluation) 
         end
-      when "text"
+      when "text", "codeInputReceive"
         if client[:uname] == nil
           ws.close
           puts "need username"
         else
-          puts "sending message"
+          puts "sending message:"
+          puts msg.inspect
           @clients.each do |cli|
-            socket_send( cli[:sock], "text", "#{client[:uname]}:  " + msg["text"]) if cli != client
+            socket_send( cli[:sock], "#{msg["type"]}", "#{client[:uname]}:  " + msg["text"]) if cli != client
           end
         end
       when "username"   
