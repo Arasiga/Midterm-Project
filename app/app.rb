@@ -1,4 +1,5 @@
 require_relative '../config/environment.rb'
+require_relative './code_eval.rb'
 
 require 'thin'
 require 'sinatra/base'
@@ -39,9 +40,16 @@ EventMachine.run do
       case msg["type"]
       when "codeRun"
         # binding.pry
-        puts eval(msg["text"])
+        evaluation = nil
+        begin
+          evaluation = safe_eval(msg["text"])
+        rescue
+          evaluation = "Syntax Error:"
+        end
+        # puts eval(msg["text"])
+        # binding.pry
         @clients.each do |cli|
-            socket_send( cli[:sock], "codeOutputReceive", eval(msg["text"])) 
+            socket_send( cli[:sock], "codeOutputReceive", evaluation) 
         end
       when "text"
         if client[:uname] == nil

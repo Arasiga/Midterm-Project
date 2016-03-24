@@ -11,6 +11,7 @@ gem 'sinatra-contrib'
 gem 'sinatra-activerecord'
 
 group :development, :test do
-  gem 'pry'
+  gem 'pry' 
+  gem 'pry-byebug'
   gem 'sqlite3'
 end

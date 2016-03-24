@@ -96,7 +96,8 @@
 
           case "codeOutputReceive":
           console.log("got it")
-            $("#code-output").append("<p>" + obj.text + "</p>");
+            display_txt = (obj.text).replace("\n", "<br />");
+            $("#code-output").html(display_txt);
             break;
 
           default:
