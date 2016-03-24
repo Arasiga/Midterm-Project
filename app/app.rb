@@ -35,10 +35,10 @@ EventMachine.run do
 
   EM::WebSocket.start(:host => '0.0.0.0', :port => '3001') do |ws|
     ws.onopen do |handshake|
-      binding.pry
+      # binding.pry
       prefix, rawcookie = handshake.headers['Cookie'].split('=')
       decoded_cookie = Marshal.load(Base64.decode64(Rack::Utils.unescape(rawcookie.split('--').first)))  
-      binding.pry
+      # binding.pry
       if (!decoded_cookie["user_id"])
         auth_error(ws)
       else
@@ -61,13 +61,18 @@ EventMachine.run do
 
     ws.onclose do
       client = get_client_from_param(@clients, :sock, ws)
-      socket_send(client[:sock], "text", "Closed")
-      puts "closing"
-      @clients.delete(client)
+      if (client)
+        socket_send(client[:sock], "text", "Closed")
+        puts "closing"
+        @clients.each do |cli|
+            socket_send( cli[:sock], "#{client[:user].username.to_s} has left the chat", text) if cli != client
+        end
+        @clients.delete(client)
+      end
     end
 
     ws.onmessage do |msg|
-      binding.pry
+      # binding.pry
       msg = JSON.parse(msg)
       client = get_client_from_param(@clients, :sock, ws)
       if (!client)
