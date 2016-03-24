@@ -65,7 +65,7 @@ EventMachine.run do
         socket_send(client[:sock], "text", "Closed")
         puts "closing"
         @clients.each do |cli|
-            socket_send( cli[:sock], "#{client[:user].username.to_s} has left the chat", text) if cli != client
+            socket_send( cli[:sock], "text", "#{client[:user].username.to_s} has left the chat") if cli != client
         end
         @clients.delete(client)
       end
