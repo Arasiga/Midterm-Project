@@ -91,7 +91,7 @@
             break;
 
           case "codeInputReceive":
-
+            $("#mycode").val(obj.text);
             break;
 
           case "codeOutputReceive":
@@ -145,7 +145,7 @@
       socket.send(msg);
     });
 
-    $('#mycode').keypress(function() {
+    $('#mycode').keyup(function() {
       console.log( $("#mycode").val());
       send("codeInputReceive",  $("#mycode").val());
     });
