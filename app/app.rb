@@ -6,9 +6,14 @@ require 'sinatra/base'
 require 'em-websocket'
 require 'json'
 
-def socket_send(ws, type, text)
-  ws.send(JSON.generate({type: type, text: text}))
+def socket_send(client, type, text)
+  client[:sock].send(JSON.generate({type: type, text: text}))
+  puts "Sending to #{client[:uname].to_s}:"
   puts JSON.generate({type: type, text: text})
+end
+
+def get_client_from_socket(client_list, socket)
+  client_list.detect {|elem| elem[:sock] == socket}
 end
 
 EventMachine.run do
@@ -21,22 +26,24 @@ EventMachine.run do
 
   EM::WebSocket.start(:host => '0.0.0.0', :port => '3001') do |ws|
     ws.onopen do |handshake|
-      @clients << {sock: ws, uname: nil}
+      client = {sock: ws, uname: nil}
+      @clients << client
       puts "new client connected"
-      socket_send(ws, "text", "Connected to #{handshake.path}.")
+      socket_send(client, "text", "Connected to #{handshake.path}.")
     end
 
     ws.onclose do
-      socket_send(ws, "text", "Closed")
+      client = get_client_from_socket(@clients, ws)
+      socket_send(client, "text", "Closed")
       puts "closing"
-      @clients.delete(@clients.detect {|elem| elem[:sock] == ws})
+      @clients.delete(client)
     end
 
     ws.onmessage do |msg|
       msg = JSON.parse(msg)
-      puts "Received Message"
+      client = get_client_from_socket(@clients, ws)
+      puts "Received Message from #{client[:uname].to_s}"
       puts msg.inspect
-      client = @clients.detect {|elem| elem[:sock] == ws}
       case msg["type"]
       when "codeRun"
         # binding.pry
@@ -49,17 +56,19 @@ EventMachine.run do
         # puts eval(msg["text"])
         # binding.pry
         @clients.each do |cli|
-            socket_send( cli[:sock], "codeOutputReceive", evaluation) 
+            socket_send(cli, "codeOutputReceive", evaluation) 
         end
       when "text", "codeInputReceive"
         if client[:uname] == nil
           ws.close
           puts "need username"
+          @clients.delete(client)          
         else
           puts "sending message:"
-          puts msg.inspect
+          text_prefix = msg["type"] == "text" ? "#{client[:uname]}:  " : ""
+          text = text_prefix + msg["text"]
           @clients.each do |cli|
-            socket_send( cli[:sock], "#{msg["type"]}", "#{client[:uname]}:  " + msg["text"]) if cli != client
+            socket_send( cli, "#{msg["type"]}", text) if cli != client
           end
         end
       when "username"   
@@ -68,7 +77,7 @@ EventMachine.run do
         if @clients.detect {|cli| cli[:uname] == name_desired} == nil
           client[:uname] = msg["text"]
         else 
-          socket_send(client[:sock], "command_username", "")
+          socket_send(client, "command_username", "")
         end
       end
     end
