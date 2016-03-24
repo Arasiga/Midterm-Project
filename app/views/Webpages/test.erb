@@ -34,126 +34,16 @@
     <button id="disconnect">Disconnect</button>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="javascript/socket.js"></script>
+    <script src="javascript/pad.js"></script>
     <script>
-      function addMessage(msg) {
-        $("#chat-log").append("<p>" + msg + "</p>");
-      }
-
       var socket, host;      
       host = "ws://localhost:3001";
 
-      function connect() {
-        try {
-          socket = new WebSocket(host);
-
-
-          addMessage("Socket State: " + socket.readyState);
-
-          socket.onopen = function() {
-            addMessage("Socket Status: " + socket.readyState + " (open)");
-          }
-
-          socket.onclose = function() {
-            addMessage("Socket Status: " + socket.readyState + " (closed)");
-          }
-
-          socket.onmessage = function(msg) {
-           readMessage(msg.data);
-          }
-          
-        } catch(exception) {
-          addMessage("Error: " + exception);
-        }
-      }
-
-      function readMessage(msg) {
-        var obj = JSON.parse(msg);
-        switch (obj.type) {
-
-          case "text":
-            addMessage(obj.text);
-            break;
-
-          case "codeSave":
-
-            break;
-
-          case "codeRun":
-
-            break;
-
-          case "codeInputReceive":
-            $("#mycode").val(obj.text);
-            break;
-
-          case "codeOutputReceive":
-          console.log("got it")
-            display_txt = (obj.text).replace("\n", "<br />");
-            $("#code-output").html(display_txt);
-            break;
-
-          case "authError":
-            $('body').html('AUTHENTICATION ERROR');
-            break;
-
-          default:
-
-          break;
-        }
-      }
-
-      function createMessage(type, text) {
-        console.log("making msg")
-        var msg =  {
-          type: type,     
-          text: text
-        };
-        return JSON.stringify(msg);
-      }
-
-      function send(type, text) {  
-        try {
-          msg = createMessage(type, text);
-          socket.send(msg);
-        } catch(exception) {
-          return false;
-        }
-
-        return true;
-    }
-
-    $('#message').keypress(function(event) {
-      text = $("#message").val();
-      if (event.keyCode == '13' & text != '') { 
-        success = send("text", text); 
-        if (!success) {
-          addMessage("Failed To Send");
-        } else {
-          addMessage('Me:  ' + text)
-        }
-        $("#message").val('');
-      }
-    });
-
-    $('#runcode').click(function() {
-      msg = createMessage("codeRun", $("#mycode").val());
-      console.log(msg);
-      socket.send(msg);
-    });
-
-    $('#mycode').keyup(function() {
-      console.log( $("#mycode").val());
-      send("codeInputReceive",  $("#mycode").val());
-    });
-
-    //Entry
-    $(function() {
-      connect();
-    });
-
-    $("#disconnect").click(function() {
-      socket.close()
-    });
+      //Entry
+      $(function() {
+        connect(host);
+      });  
     </script>
   </body>
 </html>
