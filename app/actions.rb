@@ -20,6 +20,10 @@ post '/' do
   end
 end
 
+get '/charlie' do
+  erb :'Webpages/main2'
+end
+
 get '/Webpages/page' do
   erb :'Webpages/page'
 end
