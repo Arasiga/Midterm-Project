@@ -21,6 +21,7 @@ post '/Webpages/Signin' do
 end
 
 get '/Webpages/Signin' do
+  session[:user_id] = nil
   erb :'Webpages/Signin'
 end
 
@@ -29,6 +30,7 @@ get '/pad' do
 end
 
 get '/Webpages/page' do
+  @user = User.find(session[:user_id])
   erb :'Webpages/page', layout: false
 end
 
