@@ -5200,7 +5200,7 @@ a.thumbnail.active {
   margin-top: 15px;
 }
 .media:first-child {
-  margin-top: 50;
+  margin-top: 0;
 }
 .media,
 .media-body {
@@ -5215,7 +5215,6 @@ a.thumbnail.active {
 }
 .media-object.img-thumbnail {
   max-width: none;
-  
 }
 .media-right,
 .media > .pull-right {

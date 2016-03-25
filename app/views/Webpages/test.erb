@@ -4,8 +4,23 @@
   </head>
   <body>
 
+
+    <section id="code-input" style="background-color: red;">
+      <h1> Enter code here </h1>
+      <textarea id="mycode" cols="20">
+        
+      </textarea>
+    </section>
+
+    <button id="runcode">Run code</button>
+    <button id="savecode">Save code</button>
+
+    <section id="code-output" style="background-color: blue;">
+      <h1> See output here </h1>
+    </section>
+
     # WebSockets Chat App
-    <section id="chat-log">
+    <section id="chat-log" style="background-color: green;">
     <tbody>
       <tr>
         <td></td>
@@ -13,104 +28,22 @@
     </tbody>
     </section>
 
+
+
     <input type="text" id="message">
     <button id="disconnect">Disconnect</button>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="javascript/socket.js"></script>
+    <script src="javascript/pad.js"></script>
     <script>
-      function addMessage(msg) {
-        $("#chat-log").append("<p>" + msg + "</p>");
-      }
-
-      var socket, host;
-      var uname;
+      var socket, host;      
       host = "ws://localhost:3001";
 
-      function connect() {
-        try {
-          socket = new WebSocket(host);
-
-
-          addMessage("Socket State: " + socket.readyState);
-
-          socket.onopen = function() {
-            addMessage("Socket Status: " + socket.readyState + " (open)");
-            msg = createMessage("username", uname);
-            socket.send(msg);
-          }
-
-          socket.onclose = function() {
-            addMessage("Socket Status: " + socket.readyState + " (closed)");
-          }
-
-          socket.onmessage = function(msg) {
-           readMessage(msg.data);
-          }
-          
-        } catch(exception) {
-          addMessage("Error: " + exception);
-        }
-      }
-
-      function readMessage(msg) {
-        var obj = JSON.parse(msg);
-        switch (obj.type) {
-
-          case "text":
-            addMessage(obj.text);
-            break;
-
-          case "command_username":
-            uname = prompt("Username taken: re-enter.")
-            socket.send(createMessage("username", uname));
-            break;
-
-          default:
-
-          break;
-        }
-      }
-
-      function createMessage(type, text) {
-        console.log("making msg")
-        var msg =  {
-          type: type,     
-          text: text
-        };
-        return JSON.stringify(msg);
-      }
-
-      function send() {
-      var text = $("#message").val();
-      if (text == '') {
-        addMessage("Please Enter a Message");
-        return;
-      }
-
-      try {
-        msg = createMessage("text", text);
-        socket.send(msg);
-        addMessage(uname + ':  ' + text)
-      } catch(exception) {
-        addMessage("Failed To Send")
-      }
-
-      $("#message").val('');
-    }
-
-    $('#message').keypress(function(event) {
-      if (event.keyCode == '13') { send(); }
-    });
-
-    //Entry
-    $(function() {
-     uname = prompt("Enter username");     
-      connect();
-    });
-
-    $("#disconnect").click(function() {
-      socket.close()
-    });
+      //Entry
+      $(function() {
+        connect(host);
+      });  
     </script>
   </body>
 </html>

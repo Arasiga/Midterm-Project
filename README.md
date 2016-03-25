@@ -11,7 +11,7 @@ bundle update, bundle install
 
 Run
 
-ruby app/app.rb
+ruby -W0 app/app.rb
 
 to stop the server, ctrl-c currently does not work.
 

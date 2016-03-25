@@ -1,0 +1,25 @@
+
+#inputBox{
+	background-color: rgb(0,0,255);
+	height: 400px;
+}
+
+#outputBox{
+	background-color: rgb(255,0,0);
+	height: 200px;
+}
+
+
+.nopadding{
+	padding: 0 !important;
+   margin: 0 !important;
+}
+
+#chatinputbox{
+	outline-width: 1px;
+	outline-color: black;
+	outline-style: solid;
+}
+#message{
+	width: 100%;
+}

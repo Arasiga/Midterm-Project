@@ -24,6 +24,10 @@ get '/Webpages/Signin' do
   erb :'Webpages/Signin'
 end
 
+get '/pad' do
+  erb :'Webpages/pad'
+end
+
 get '/Webpages/page' do
   erb :'Webpages/page'
 end
