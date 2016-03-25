@@ -35,30 +35,32 @@ EventMachine.run do
 
   EM::WebSocket.start(:host => '0.0.0.0', :port => '3001') do |ws|
     ws.onopen do |handshake|
-      # binding.pry
-      prefix, rawcookie = handshake.headers['Cookie'].split('=')
-      decoded_cookie = Marshal.load(Base64.decode64(Rack::Utils.unescape(rawcookie.split('--').first)))  
-      # binding.pry
-      if (!decoded_cookie["user_id"])
-        auth_error(ws)
-      else
-        user = User.find(decoded_cookie["user_id"])
-        if (!user)
+      begin
+        rawcookie = handshake.headers['Cookie'].partition('rack.session=').last
+        decoded_cookie = Marshal.load(Base64.decode64(Rack::Utils.unescape(rawcookie.split('--').first)))  
+        if (!decoded_cookie["user_id"])
           auth_error(ws)
         else
-          if (user_connected?(user))
-            socket_send(ws, "text", "Already connected")
-            ws.close
+          user = User.find(decoded_cookie["user_id"])
+          if (!user)
+            auth_error(ws)
           else
-            client = {sock: ws, user: user}
-            @clients << client
-            puts "new client connected"
-            socket_send(client[:sock], "text", "Connected to #{handshake.path}.")
-            @clients.each do |cli|
-              socket_send( cli[:sock], "text", "#{client[:user].username.to_s} has joined the chat") if cli != client
+            if (user_connected?(user))
+              socket_send(ws, "text", "Already connected")
+              ws.close
+            else
+              client = {sock: ws, user: user}
+              @clients << client
+              puts "new client connected"
+              socket_send(client[:sock], "text", "Connected to #{handshake.path}.")
+              @clients.each do |cli|
+                socket_send( cli[:sock], "text", "#{client[:user].username.to_s} has joined the chat") if cli != client
+              end
             end
           end
         end
+      rescue
+        ws.close
       end
     end
 
