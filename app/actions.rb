@@ -1,10 +1,10 @@
 # Homepage (Root path)
 get '/' do
   session[:user_id] = nil
-  erb :'Webpages/Signin'
+  erb :'Webpages/home', layout: false
 end
 
-post '/' do 
+post '/Webpages/Signin' do 
 
   @username = params[:username]
   @password = params[:password]
@@ -18,6 +18,10 @@ post '/' do
     @login_failed = true
     erb :'Webpages/Signin'
   end
+end
+
+get '/Webpages/Signin' do
+  erb :'Webpages/Signin'
 end
 
 get '/pad' do
