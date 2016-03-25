@@ -23,3 +23,50 @@
 #message{
 	width: 100%;
 }
+.replBox{
+	width: 600px;
+	display: inline-block;
+}
+.messageBox{
+	position: absolute;
+	width: 400px;
+	display: inline-block;
+	padding: 0px;
+	margin: 0px;
+	top: 0px;
+	left: 600px;
+}
+.menubar{
+	background-color: rgb(30,30,30);
+}
+
+.menuButton{
+	height: 40px;
+	
+}
+.menuFont:hover{
+	color: rgb(180,180,180);
+}
+.menuFont{
+	font-family: 'Lato', serif;
+	font-size: 1vw;
+	color: white;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 0px;
+}
+.logo{
+	font-family: 'Open Sans', serif;
+	font-size: 1.5vw;
+	color: white;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 0px;
+}
+
+nav{
+	
+}
+
+
+

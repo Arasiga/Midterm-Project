@@ -25,7 +25,7 @@ get '/Webpages/Signin' do
 end
 
 get '/pad' do
-  erb :'Webpages/pad'
+  erb :'Webpages/pad', :layout => false
 end
 
 get '/Webpages/page' do
