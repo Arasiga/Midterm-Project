@@ -54,6 +54,9 @@ EventMachine.run do
             @clients << client
             puts "new client connected"
             socket_send(client[:sock], "text", "Connected to #{handshake.path}.")
+            @clients.each do |cli|
+              socket_send( cli[:sock], "text", "#{client[:user].username.to_s} has joined the chat") if cli != client
+            end
           end
         end
       end
