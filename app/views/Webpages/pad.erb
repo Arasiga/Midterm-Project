@@ -1,31 +1,22 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>Main</title>
-
-    <!-- Bootstrap -->
     <link href="stylesheets/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="stylesheets/pad.css">
     <link rel="stylesheet" href="stylesheets/codemirror.css">
     <link rel="stylesheet" href="stylesheets/ambiance.css">
     <script src="javascript/codemirror.js"></script>
     <script src="javascript/ruby.js"></script>
-
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
   </head>
   <body>
 
-    <div class="container-fluid">
+
+   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-8 col-md-8 col-sm-10 nopadding">
         <div id="input">
@@ -46,8 +37,16 @@
       </div>
     </div>
     <button id="putstuff">submit</button>
+    <button id="runcode">Run code</button>
+    <button id="disconnect">Disconnect</button>
   </div>
 
+
+
+  <input type="text" id="message">
+  <button id="disconnect">Disconnect</button>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script>
     var inputCodeMirror = CodeMirror(document.getElementById("input"), {
       value: "Input",
@@ -62,10 +61,6 @@
       console.log(input)
     });
 
-    inputCodeMirror.on('change', function(cMirror) {
-      console.log( cMirror.getValue() );
-    })
-
   </script>
   <script>
     var outputCodeMirror = CodeMirror(document.getElementById("output"), {
@@ -75,7 +70,6 @@
     });
     outputCodeMirror.setSize("100%", 200);
   </script>
-
   <script>
     var chatCodeMirror = CodeMirror(document.getElementById("chatbox"), {
       value: "output",
@@ -84,21 +78,16 @@
     });
     chatCodeMirror.setSize("100%", 573);
   </script>
+  <script src="javascript/bootstrap.min.js"></script>
+  <script src="javascript/socket.js"></script>
+  <script src="javascript/pad_script.js"></script>
+  <script>
+    var socket, host;      
+    host = "ws://localhost:3001";
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="javascript/bootstrap.min.js"></script>
-
-    <script src="javascript/socket.js"></script>
-    <script src="javascript/pad2.js"></script>
-    <script>
-      var socket, host;      
-      host = "ws://localhost:3001";
-
-      //Entry
-      $(function() {
-        connect(host);
+    //Entry
+    $(function() {
+      connect(host);
       });  
     </script>
   </body>
