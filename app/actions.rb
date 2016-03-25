@@ -29,7 +29,7 @@ get '/pad' do
 end
 
 get '/Webpages/page' do
-  erb :'Webpages/page'
+  erb :'Webpages/page', layout: false
 end
 
 get '/Webpages/Signup' do
