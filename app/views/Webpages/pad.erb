@@ -35,34 +35,38 @@
 
     </nav>
 
-    <div class="row">
-      <div class="col-lg-8 col-md-8 col-sm-8 noPadding">
-        <div id="input">
+    <div class="row mainBoxDiv">
+      <div class="col-lg-1 col-md-1 col-sm-1 hidden-xs noPadding maxHeight ">
+        <div class="memberBar">
+        
+        </div>
+      </div>
+      <div class="col-lg-7 col-md-7 col-sm-7 noPadding maxHeight">
+        <div id="input" class="inputBoxDiv">
         
         </div>
         <div class="row inputButtonsSpace">
-          <div class="col-lg-3 col-md-3 col-sm-3 noPadding center-v">
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 noPadding center-v">
             <button id="runcode" class="inputButtons ">Run</button>
           </div>
-          <div class="col-lg-3 col-md-3 col-sm-3 noPadding center-v">
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 noPadding center-v">
             <button id="disconnect" class="inputButtons ">Disconnect</button>
           </div>
         </div>
-        
-        <div id="output">
+        <div id="output" class="outputBoxDiv">
           
         </div>
       </div>
-      <div class="col-lg-4 col-md-4 col-sm-4 noPadding">
-        <div id="chatBox">
+      <div class="col-lg-4 col-md-4 col-sm-4 noPadding maxHeight">
+        <div id="chatBox" class="chatBoxDiv">
           
         </div>
         <div class="chatInputBox">
-          <input type="text" id="message" class="chatinput" placeholder="Type a message..."></input>
+          <input type="text" id="message" class="chatInput" placeholder="Type a message..."></input>
         </div>
 
       </div>
-    </div>=
+    </div>
   </div>
    
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -74,7 +78,7 @@
       lineNumbers: true,
 
     });
-    inputCodeMirror.setSize("100%", "100");
+    inputCodeMirror.setSize("100%", "100%");
     $('#putstuff').on('click', function() {
       var input = inputCodeMirror.setValue("harshhhh");
       console.log(input)
@@ -97,7 +101,7 @@
       theme: "base16-light",
       readOnly: true
     });
-    chatCodeMirror.setSize("100%", 559);
+    chatCodeMirror.setSize("100%", "100%");
   </script>
   <script src="/javascript/bootstrap.min.js"></script>
   <script src="/javascript/socket.js"></script>
