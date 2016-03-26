@@ -86,18 +86,19 @@ end
 get '/newproj' do
   project_creator = User.find(params[:user].to_i)
   if (!project_creator)
-    {status: false, error: ["User not found"]}.to_json
+    {status: false, name: params[:name], error: ["User not found"]}.to_json
   else
     proj = Project.new(name: params[:name], description: params[:description])
     if (!proj.save)
-      {status: false, error: proj.errors.full_messages}.to_json
+      {status: false, name: params[:name], error: proj.errors.full_messages}.to_json
       
     else
       proj.add(project_creator)
       proj.set_admin(project_creator)
-      {status: true, error: ["None"]}.to_json
+      {status: true, name: params[:name], error: ["None"]}.to_json
     end
   end
+
 end
 
 
