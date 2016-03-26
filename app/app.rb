@@ -36,7 +36,8 @@ EventMachine.run do
       begin
         rawcookie = handshake.headers['Cookie'].partition('rack.session=').last
         decoded_cookie = Marshal.load(Base64.decode64(Rack::Utils.unescape(rawcookie.split('--').first)))  
-        if (!decoded_cookie["user_id"])
+        binding.pry
+        if (!decoded_cookie["user_id"] || !decoded_cookie["pad"])
           auth_error(ws)
         else
           user = User.find(decoded_cookie["user_id"])
@@ -44,15 +45,15 @@ EventMachine.run do
             auth_error(ws)
           else
             if (user_connected?(user))
-              socket_send(ws, "text", "Already connected")
+              socket_send(ws, "alreadyConnected", "Already connected")
               ws.close
             else
-              client = {sock: ws, user: user}
+              client = {sock: ws, user: user, pad: decoded_cookie["pad"]}
               @clients << client
               puts "new client connected"
-              socket_send(client[:sock], "text", "Connected to #{handshake.path}.")
+              socket_send(client[:sock], "text", "Connected to the pad for: #{Project.find_by(id: client[:pad]).name}.")
               @clients.each do |cli|
-                socket_send( cli[:sock], "text", "#{client[:user].username.to_s} has joined the chat") if cli != client
+                socket_send( cli[:sock], "text", "#{client[:user].username.to_s} has joined the pad") if cli != client && cli[:pad] == client[:pad]
               end
             end
           end
@@ -68,7 +69,7 @@ EventMachine.run do
         socket_send(client[:sock], "text", "Closed")
         puts "closing"
         @clients.each do |cli|
-            socket_send( cli[:sock], "text", "#{client[:user].username.to_s} has left the chat") if cli != client
+            socket_send( cli[:sock], "text", "#{client[:user].username.to_s} has left the chat") if cli != client && cli[:pad] == client[:pad]
         end
         @clients.delete(client)
       end
@@ -96,14 +97,14 @@ EventMachine.run do
         # puts eval(msg["text"])
         # binding.pry
         @clients.each do |cli|
-            socket_send(cli[:sock], "codeOutputReceive", evaluation) 
+            socket_send(cli[:sock], "codeOutputReceive", evaluation) if cli[:pad] == client[:pad]
         end
       when "text", "codeInputReceive"       
         puts "sending message:"
         text_prefix = msg["type"] == "text" ? "#{client[:user].username.to_s}:  " : ""
         text = text_prefix + msg["text"]
         @clients.each do |cli|
-          socket_send( cli[:sock], "#{msg["type"]}", text) if cli != client
+          socket_send( cli[:sock], "#{msg["type"]}", text) if cli != client && cli[:pad] == client[:pad]
         end
       end
     end

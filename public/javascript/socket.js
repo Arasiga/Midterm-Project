@@ -50,6 +50,10 @@ function readMessage(msg) {
       $('body').html('AUTHENTICATION ERROR');
       break;
 
+    case "alreadyConnected":
+      $('body').html('ALREADY CONNECTED');
+      break;
+
     default:
 
     break;

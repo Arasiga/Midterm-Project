@@ -44,6 +44,7 @@ get '/pad/:num' do
   proj = Project.find_by(id: params[:num])
   redirect '/invalid_project' if (!proj)
   redirect "/no_access" if !proj.users.include?(curr_user)
+  session[:pad] = params[:num]
   erb :'Webpages/pad', :layout => false
 end
 
