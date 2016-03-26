@@ -30,8 +30,18 @@ get '/pad' do
 end
 
 get '/Webpages/page' do
-  @user = User.find(session[:user_id])
-  erb :'Webpages/page', layout: false
+  if (!session[:user_id])
+    @login_failed = true
+    erb :'Webpages/Signin'
+  else
+    @user = User.find(session[:user_id])
+    if (!@user)
+      @login_failed = true
+      erb :'Webpages/Signin'
+    else
+      erb :'Webpages/page', layout: false
+    end
+  end  
 end
 
 get '/Webpages/Signup' do
@@ -44,21 +54,6 @@ end
 
 get '/test' do
   erb :'/Webpages/test'
-end
-
-get '/test/join' do
-  if (!session[:user_id])
-    @login_failed = true
-    erb :'Webpages/Signin'
-  else
-    @user = User.find(session[:user_id])
-    if (!@user)
-      @login_failed = true
-      erb :'Webpages/Signin'
-    else
-      erb :'/Webpages/test_join'
-    end
-  end
 end
 
 post '/Webpages/Signup' do
@@ -84,12 +79,20 @@ get '/Webpages/database' do
 end
 
 get '/newproj' do
-  binding.pry
-  "hi"
-  # if (!params["user"])
-  #   "No user session"
-  # else
-  #   creator = User.find(params[])
+  project_creator = User.find(params[:user].to_i)
+  if (!project_creator)
+    "Error: User not found"
+  else
+    proj = Project.new(name: params[:name], description: params[:description])
+    if (!proj.save)
+      binding.pry
+      proj.errors.full_messages
+    else
+      proj.add(project_creator)
+      proj.set_admin(project_creator)
+      "Project creation successful"
+    end
+  end
 end
 
 
