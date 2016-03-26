@@ -26,6 +26,7 @@ get '/Webpages/Signin' do
 end
 
 get '/pad' do
+  "Go away"
   erb :'Webpages/pad', :layout => false
 end
 
@@ -85,15 +86,16 @@ end
 get '/newproj' do
   project_creator = User.find(params[:user].to_i)
   if (!project_creator)
-    "Error: User not found"
+    {status: false, error: ["User not found"]}.to_json
   else
     proj = Project.new(name: params[:name], description: params[:description])
     if (!proj.save)
-      proj.errors.full_messages
+      {status: false, error: proj.errors.full_messages}.to_json
+      
     else
       proj.add(project_creator)
       proj.set_admin(project_creator)
-      "Project creation successful"
+      {status: true, error: ["None"]}.to_json
     end
   end
 end
