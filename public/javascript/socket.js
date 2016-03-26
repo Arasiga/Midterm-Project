@@ -6,6 +6,8 @@ function connect(host) {
 
     socket.onopen = function() {
       addMessage("Socket Status: " + socket.readyState + " (open)");
+      send("sendCurrCode", "");
+
     }
 
     socket.onclose = function() {
@@ -16,8 +18,7 @@ function connect(host) {
      readMessage(msg.data);
     }
 
-    send("sendCurrCode", "");
-    
+
   } catch(exception) {
     addMessage("Error: " + exception);
   }
@@ -57,7 +58,7 @@ function readMessage(msg) {
       break;
 
     case "sendCurrCode":
-      send("codeInputReceive",  $("#mycode").val());
+      send("codeInputReceive",  inputCode.getValue());
       break;
 
     default:

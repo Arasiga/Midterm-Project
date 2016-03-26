@@ -13,14 +13,12 @@ end
 
 def safe_eval(str)
   x = nil
-  # binding.pry
   begin
     x = eval(str)
     y = with_captured_stdout { str }
     z = y.to_s  + "=> "+ x.to_s
     return z
   rescue Exception => error
-    # binding.pry
     x = error.message + "\n" #+ error.backtrace.reduce("") do |str, elem|
       # str += elem + "\n"
       # str

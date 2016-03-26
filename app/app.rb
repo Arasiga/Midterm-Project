@@ -102,8 +102,11 @@ EventMachine.run do
           socket_send( cli[:sock], "#{msg["type"]}", text) if cli != client && cli[:pad] == client[:pad]
         end
       when "sendCurrCode"
-        other_client =  clients.detect {|cli| cli != client && cli[:pad] == client[:pad]}
-        socket_send(other_client[:sock], "sendCurrCode", "") if (other_client)
+        # binding.pry
+        other_client =  @clients.detect {|cli| cli != client && cli[:pad] == client[:pad]}
+        if other_client
+          socket_send(other_client[:sock], "sendCurrCode", "")
+        end
       end
     end
   end
