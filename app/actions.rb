@@ -26,11 +26,39 @@ get '/Webpages/Signin' do
 end
 
 get '/pad' do
+  "Go away"
+  # erb :'Webpages/pad', :layout => false
+end
+
+get '/invalid_project' do
+  "Project not found"
+end
+
+get '/no_access' do
+  "You do not have access to this project"
+end
+
+get '/pad/:num' do
+  no_user_redirect
+  proj = Project.find_by(id: params[:num])
+  redirect '/invalid_project' if (!proj)
+  redirect "/no_access" if !proj.users.include?(curr_user)
+  session[:pad] = params[:num]
   erb :'Webpages/pad', :layout => false
 end
 
+get '/list_projects' do
+  user = curr_user
+  if (!user)
+    [].to_json
+  else
+    user.projects.map {|x| x.name}.to_json
+  end
+end
+
 get '/Webpages/page' do
-  @user = User.find(session[:user_id])
+  no_user_redirect
+  @user = curr_user
   erb :'Webpages/page', layout: false
 end
 
@@ -68,4 +96,30 @@ get '/Webpages/database' do
   erb :'Webpages/database'
 end
 
+get '/newproj' do
+  project_creator = User.find(params[:user].to_i)
+  if (!project_creator || project_creator != curr_user)
+    {status: false, name: params[:name], error: ["User not found"]}.to_json
+  else
+    proj = Project.new(name: params[:name], description: params[:description])
+    if (!proj.save)
+      {status: false, name: params[:name], error: proj.errors.full_messages}.to_json
+      
+    else
+      proj.add(project_creator)
+      proj.set_admin(project_creator)
+      {status: true, name: params[:name], error: ["None"]}.to_json
+    end
+  end
+end
 
+
+helpers do
+  def curr_user
+    session[:user_id] == nil ? nil : User.find_by(id: session[:user_id])
+  end
+
+  def no_user_redirect
+    redirect '/Webpages/Signin' if !curr_user
+  end
+end

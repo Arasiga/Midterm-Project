@@ -4,6 +4,7 @@ class Project < ActiveRecord::Base
   has_many :users, :through => :memberships
 
   validates_presence_of :name
+  validates :name, :uniqueness => true
 
   class InvalidUser < TypeError
     def initialize(msg="Invalid user")
@@ -11,7 +12,6 @@ class Project < ActiveRecord::Base
   end
 
   def set_admin(user)
-    # binding.pry
     raise InvalidUser.new if !user.is_a?(User)
     raise InvalidUser.new("User is not in project") if !self.users.include?(user)
     required_membership = nil

@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="/stylesheets/bootstrap.css">
-<link href="jquery-ui.css" rel="stylesheet">
+<!--link href="jquery-ui.css" rel="stylesheet"-->
 <script src="/javascript/jquery.validate.js"> </script>
 <script src="/javascript/bootstrap.js"> </script>
 <script src="/javascript/application.js"> </script>
@@ -80,10 +80,14 @@
             </li>
 
             <li class="dropdown-submenu"><a href="" style="text-decoration: none;"> Create New Project </a>
-              <ul class="dropdown-menu">
+              <ul class="dropdown-menu">             
                 <li class="dropdown-header"> New Project </li>
-                <li><input type="text" name="title" placeholder="Insert Project Name"></li> 
-                <li><input type="text" name="description" placeholder="Description"></li>
+                <li><input type="text" id="newProjName" name="title" placeholder="Insert Project Name" required></li> 
+                <li><input type="text" id="NewProjDesc" name="description" placeholder="Description" required></li>
+                <li class="dropdown-divider">
+                  <div class="divider"></div>
+                </li>
+                <button class="btn btn-success center-block"  id="create_proj">Create!</button>                
               </ul>
             </li>
 
@@ -109,11 +113,19 @@
         <div class="text-center col-md-4 col-md-offset-4" style="color: white; font-size: 20px;"> What would you like to work on today? </div>
       </div>
     </div>
-
-
-
-
-
   </div>
+  <script>
+    $('#create_proj').click(function() {
+
+        var res = $.get('/newproj', {user: <%=@user.id%>, name: $('#newProjName').val(), description: $('#NewProjDesc').val()}, function(response) {
+          console.log(response);
+        });
+    });
+    $(function() {
+      var res = $.get('/list_projects', function(response) {
+          console.log(response);
+        });
+    });
+    </script>
 
 </body>
