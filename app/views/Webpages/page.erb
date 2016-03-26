@@ -118,6 +118,11 @@
     $(function(){
 
     });
+    $(function() {
+      var res = $.get('/list_projects', function(response) {
+          console.log(response);
+        });
+    });
     </script>
 
 </body>
