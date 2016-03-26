@@ -36,7 +36,6 @@ EventMachine.run do
       begin
         rawcookie = handshake.headers['Cookie'].partition('rack.session=').last
         decoded_cookie = Marshal.load(Base64.decode64(Rack::Utils.unescape(rawcookie.split('--').first)))  
-        binding.pry
         if (!decoded_cookie["user_id"] || !decoded_cookie["pad"])
           auth_error(ws)
         else
@@ -76,7 +75,6 @@ EventMachine.run do
     end
 
     ws.onmessage do |msg|
-      # binding.pry
       msg = JSON.parse(msg)
       client = get_client_from_param(@clients, :sock, ws)
       if (!client)
@@ -87,15 +85,12 @@ EventMachine.run do
       puts msg.inspect
       case msg["type"]
       when "codeRun"
-        # binding.pry
         evaluation = nil
         begin
           evaluation = safe_eval(msg["text"])
         rescue
           evaluation = "Syntax Error:"
         end
-        # puts eval(msg["text"])
-        # binding.pry
         @clients.each do |cli|
             socket_send(cli[:sock], "codeOutputReceive", evaluation) if cli[:pad] == client[:pad]
         end
@@ -106,6 +101,9 @@ EventMachine.run do
         @clients.each do |cli|
           socket_send( cli[:sock], "#{msg["type"]}", text) if cli != client && cli[:pad] == client[:pad]
         end
+      when "sendCurrCode"
+        other_client =  clients.detect {|cli| cli != client && cli[:pad] == client[:pad]}
+        socket_send(other_client[:sock], "sendCurrCode", "") if (other_client)
       end
     end
   end
