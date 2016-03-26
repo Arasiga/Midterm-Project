@@ -29,6 +29,10 @@ get '/pad' do
   erb :'Webpages/pad', :layout => false
 end
 
+get '/pad/:num' do
+  erb :'Webpages/pad', :layout => false
+end
+
 get '/Webpages/page' do
   if (!session[:user_id])
     @login_failed = true
