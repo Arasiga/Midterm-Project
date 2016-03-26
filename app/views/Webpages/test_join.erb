@@ -114,7 +114,7 @@
   <script>
     $('#create_proj').click(function() {
 
-        var res = $.get('/newproj', function(response) {
+        var res = $.get('/newproj', {user: <%=@user.id%>}, function(response) {
           console.log(response);
         });
     });

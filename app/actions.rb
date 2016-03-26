@@ -84,7 +84,12 @@ get '/Webpages/database' do
 end
 
 get '/newproj' do
+  binding.pry
   "hi"
+  # if (!params["user"])
+  #   "No user session"
+  # else
+  #   creator = User.find(params[])
 end
 
 
