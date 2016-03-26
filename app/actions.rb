@@ -46,6 +46,21 @@ get '/test' do
   erb :'/Webpages/test'
 end
 
+get '/test/join' do
+  if (!session[:user_id])
+    @login_failed = true
+    erb :'Webpages/Signin'
+  else
+    @user = User.find(session[:user_id])
+    if (!@user)
+      @login_failed = true
+      erb :'Webpages/Signin'
+    else
+      erb :'/Webpages/test_join'
+    end
+  end
+end
+
 post '/Webpages/Signup' do
   @user = User.new(
     first_name: params[:first_name],
@@ -66,6 +81,10 @@ end
 get '/Webpages/database' do
   @users = User.all
   erb :'Webpages/database'
+end
+
+get '/newproj' do
+  "hi"
 end
 
 
