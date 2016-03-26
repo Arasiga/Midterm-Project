@@ -1,11 +1,21 @@
+.memberBar{
+	height: 100%;
+	background-color: rgb(50,50,50);
+}
 .mainBoxDiv{
 	height: calc(100vh - 40px);
 }
+.maxHeight{
+	height: 100%;
+}
 .inputBoxDiv{
-	height: calc(60% - 60px)
+	height: calc(60% - 60px);
 }
 .outputBoxDiv{
 	height: 40%;
+}
+.chatBoxDiv{
+	height: calc(100% - 25px);
 }
 .container-fluid{
 	padding-left: 0px;
@@ -70,6 +80,9 @@
 	outline-width: 0px;
 	outline-color: red;
 	outline-style: solid;
+}
+.chatInput{
+	height: 25px;
 }
 
 input:focus {
