@@ -85,7 +85,6 @@ get '/newproj' do
   else
     proj = Project.new(name: params[:name], description: params[:description])
     if (!proj.save)
-      binding.pry
       proj.errors.full_messages
     else
       proj.add(project_creator)
