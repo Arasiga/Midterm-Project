@@ -56,6 +56,25 @@ get '/list_projects' do
   end
 end
 
+get '/list_users' do
+  user = curr_user
+  if (!user)
+    [].to_json
+  else 
+    case params[:project]
+    when "all"
+      Users.all.map {|x| x.name}.to_json
+    else
+      proj = Project.find_by(id: params[:project].to_i)
+      if (!proj)
+        [].to_json
+      else
+        proj.users.map {|x| x.name}.to_json
+      end
+    end
+  end
+end
+
 get '/Webpages/page' do
   no_user_redirect
   @user = curr_user
