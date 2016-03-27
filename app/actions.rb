@@ -40,10 +40,10 @@ end
 
 get '/pad/:num' do
   no_user_redirect
-  binding.pry
   proj = Project.find_by(id: params[:num])
   redirect '/invalid_project' if (!proj)
   redirect "/no_access" if !proj.users.include?(curr_user)
+  session[:pad] = params[:num]
   erb :'Webpages/pad', :layout => false
 end
 
@@ -104,7 +104,6 @@ end
 
 get '/newproj' do
   project_creator = User.find(params[:user].to_i)
-  binding.pry
   if (!project_creator || project_creator != curr_user)
     {status: false, name: params[:name], error: ["User not found"]}.to_json
   else

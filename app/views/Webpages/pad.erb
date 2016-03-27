@@ -11,45 +11,58 @@
     <link rel="stylesheet" type="text/css" href="/charlie/pad.css">
     <link rel="stylesheet" href="/charlie/codemirror.css">
     <link rel="stylesheet" href="/charlie/ambiance.css">
+    <link rel="stylesheet" href="/charlie/base16-light.css">
+
     <script src="/javascript/codemirror.js"></script>
     <script src="/javascript/ruby.js"></script>
   </head>
   <body>
 
   <div class="container-fluid">
-    <nav class="row menubar">
-      <div class="col-lg-1 col-md-1 col-sm-1 nopadding menuButton">
+    <nav class="row menuBar">
+      <div class="col-lg-1 col-md-1 col-sm-1 noPadding menuButton">
         <h3 class="logo">RubyPad</h3>
       </div>
-      <div class="col-lg-1 col-lg-push-8 col-md-1 col-md-push-8 col-sm-1 col-sm-push-8 nopadding menuButton">
+      <div class="col-lg-1 col-lg-push-8 col-md-1 col-md-push-8 col-sm-1 col-sm-push-8 hidden-xs noPadding menuButton">
         <h3 class="menuFont">Help</h3>
       </div>
-      <div class="col-lg-1 col-lg-push-8 col-md-1 col-md-push-8 col-sm-1 col-sm-push-8 nopadding menuButton">
+      <div class="col-lg-1 col-lg-push-8 col-md-1 col-md-push-8 col-sm-1 col-sm-push-8 hidden-xs noPadding menuButton">
         <h3 class="menuFont">Profile</h3>
       </div>
-      <div class="col-lg-1 col-lg-push-8 col-md-1 col-md-push-8 col-sm-1 col-sm-push-8 nopadding menuButton">
+      <div class="col-lg-1 col-lg-push-8 col-md-1 col-md-push-8 col-sm-1 col-sm-push-8 hidden-xs noPadding menuButton">
         <h3 class="menuFont">Projects</h3>
       </div>
 
     </nav>
 
-    <div class="row">
-      <div class="col-lg-8 col-md-8 col-sm-8 nopadding">
-        <div id="input">
+    <div class="row mainBoxDiv">
+      <div class="col-lg-1 col-md-1 col-sm-1 hidden-xs noPadding maxHeight ">
+        <div class="memberBar">
         
         </div>
-        <div id="output">
-          
-        </div>
-        <button id="runcode">Run code</button>
-        <button id="disconnect">Disconnect</button>
       </div>
-      <div class="col-lg-4 col-md-4 col-sm-4 nopadding">
-        <div id="chatbox">
+      <div class="col-lg-7 col-md-7 col-sm-7 noPadding maxHeight">
+        <div id="input" class="inputBoxDiv">
+        
+        </div>
+        <div class="row inputButtonsSpace">
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 noPadding center-v">
+            <button id="runcode" class="inputButtons ">Run</button>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 noPadding center-v">
+            <button id="disconnect" class="inputButtons ">Disconnect</button>
+          </div>
+        </div>
+        <div id="output" class="outputBoxDiv">
           
         </div>
-        <div id="chatinputbox" >
-          <input type="text" id="message"></input>
+      </div>
+      <div class="col-lg-4 col-md-4 col-sm-4 noPadding maxHeight">
+        <div id="chatBox" class="chatBoxDiv">
+          
+        </div>
+        <div class="chatInputBox">
+          <input type="text" id="message" class="chatInput" placeholder="Type a message..."></input>
         </div>
 
       </div>
@@ -65,7 +78,7 @@
       lineNumbers: true,
 
     });
-    inputCodeMirror.setSize("100%", 400);
+    inputCodeMirror.setSize("100%", "100%");
     $('#putstuff').on('click', function() {
       var input = inputCodeMirror.setValue("harshhhh");
       console.log(input)
@@ -77,17 +90,18 @@
       value: "output",
       mode:  "ruby",
       theme: "ambiance",
+      readOnly: true,
       lineNumbers: true
     });
-    outputCodeMirror.setSize("100%", 200);
+    outputCodeMirror.setSize("100%", "100%");
+
   </script>
   <script>
-    var chatCodeMirror = CodeMirror(document.getElementById("chatbox"), {
-      value: "output",
-      mode:  "ruby",
-      theme: "ambiance"
+    var chatCodeMirror = CodeMirror(document.getElementById("chatBox"), {
+      theme: "base16-light",
+      readOnly: true
     });
-    chatCodeMirror.setSize("100%", 573);
+    chatCodeMirror.setSize("100%", "100%");
   </script>
   <script src="/javascript/bootstrap.min.js"></script>
   <script src="/javascript/socket.js"></script>

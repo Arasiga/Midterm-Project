@@ -6,6 +6,8 @@ function connect(host) {
 
     socket.onopen = function() {
       addMessage("Socket Status: " + socket.readyState + " (open)");
+      send("sendCurrCode", "");
+
     }
 
     socket.onclose = function() {
@@ -15,7 +17,8 @@ function connect(host) {
     socket.onmessage = function(msg) {
      readMessage(msg.data);
     }
-    
+
+
   } catch(exception) {
     addMessage("Error: " + exception);
   }
@@ -48,6 +51,14 @@ function readMessage(msg) {
 
     case "authError":
       $('body').html('AUTHENTICATION ERROR');
+      break;
+
+    case "alreadyConnected":
+      $('body').html('ALREADY CONNECTED');
+      break;
+
+    case "sendCurrCode":
+      send("codeInputReceive",  inputCode.getValue());
       break;
 
     default:
