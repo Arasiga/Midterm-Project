@@ -138,5 +138,7 @@ input:focus {
 ::-webkit-input-placeholder {
    color: rgb(210,210,210);
 }
-
+a:hover{
+	text-decoration: none;
+}
 
