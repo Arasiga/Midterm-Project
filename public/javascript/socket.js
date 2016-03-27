@@ -2,16 +2,16 @@ function connect(host) {
   try {
     socket = new WebSocket(host);
 
-    addMessage("Socket State: " + socket.readyState);
+    addMessage("Attempting to connect...");
 
     socket.onopen = function() {
-      addMessage("Socket Status: " + socket.readyState + " (open)");
+      addMessage("Connection established.");
       send("sendCurrCode", "");
 
     }
 
     socket.onclose = function() {
-      addMessage("Socket Status: " + socket.readyState + " (closed)");
+      addMessage("Disconnected.");
     }
 
     socket.onmessage = function(msg) {

@@ -21,9 +21,9 @@ function addCodeInput(msg) {
 
 function modUserList(msg) {
   $('#userList').html(" ");
-  var stuff = "<ul>";
+  var stuff = "<ul class='list-group maxHeight'>";
   for (var i = 0; i < msg.length; i++) {
-    stuff += "<li>" + msg[i] + "</li><br>"
+    stuff += "<li class='list-group-item'>" + msg[i] + "</li>"
   }
    stuff += "</ul>"
   $('#userList').html(stuff);
