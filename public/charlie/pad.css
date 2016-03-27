@@ -1,12 +1,12 @@
-.memberBar{
-	height: 100%;
-	background-color: rgb(50,50,50);
-}
 .mainBoxDiv{
 	height: calc(100vh - 40px);
 }
 .maxHeight{
 	height: 100%;
+}
+.memberBar{
+	height: 100%;
+	background-color: rgb(50,50,50);
 }
 .inputBoxDiv{
 	height: calc(60% - 60px);
