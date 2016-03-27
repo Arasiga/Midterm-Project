@@ -1,5 +1,6 @@
 function connect(host) {
   try {
+    debugger;
     socket = new WebSocket(host);
 
     addMessage("Socket State: " + socket.readyState);

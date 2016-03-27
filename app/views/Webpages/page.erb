@@ -42,7 +42,7 @@
           My Projects <span class="glyphicon glyphicon-tasks"></span>
         </button>
 
-        <ul class="dropdown-menu projectlist">
+        <ul class="dropdown-menu projectlist" id="new-project">
           <li class="dropdown-header">Project List</li>
 
 
@@ -52,12 +52,12 @@
                   <li class="dropdown-header"> Members </li>
                   
                   <% x.memberships.each do |members| %>
-                    <li><%= User.find(members.user_id.to_i).name %></li>
+                    <li><%= User.find(members.user_id.to_i).username %></li>
                   <% end %>
                   <li class="dropdown-divider">
                     <div class="divider"></div>
                   </li>
-                  <li><a href=""><button class="btn btn-success"> Go to Project! </button></a></li>
+                  <li><a href="/pad/<%= x.id%>"><button class="btn btn-success"> Go to Project! </button></a></li>
                   <li class="dropdown-divider">
                     <div class="divider"></div>
                   </li>
@@ -76,6 +76,8 @@
                 </ul>
               </li> 
             <% end %>
+
+            
 
           
             <li class="dropdown-divider">
@@ -121,13 +123,31 @@
   <script>
     $('#create_proj').click(function() {
 
-        var res = $.get('/newproj', {user: <%=@user.id%>, name: $('#newProjName').val(), description: $('#NewProjDesc').val()}, function(response) {
-        
-        var a = JSON.parse(response)
-        debugger
-        if (a.status == true) {
-          var name = a.name
-          $(".new-project").append("<li class='dropdown-submenu'>" + name + "</li>"); 
+      var res = $.get('/newproj', {user: <%=@user.id%>, name: $('#newProjName').val(), description: $('#NewProjDesc').val()}, function(response) {
+      
+        var project = JSON.parse(response)
+ 
+        if (project.status == true) {
+          var name = project.name
+          debugger
+          $("#new-project").append("<li class='dropdown-submenu'>" +
+            "<a href='' style='text-decoration: none;'>" +
+            name  + 
+            "</a>" + 
+              "<ul class='dropdown-menu'>" + 
+                "<li class='dropdown-header'> Members </li>" +
+                "<li class='dropdown-divider'><div class='divider'></div></li>"+
+                "<li><a href=''><button class='btn btn-success'> Go to Project! </button></a></li>" + 
+                "<li class='dropdown-divider'><div class='divider'></div></li>"+
+                "<li class='dropdown-submenu'><a href=''> Add Member </a>"+
+                  "<ul class='dropdown-menu'>"+
+                    "<li class='dropdown-header'> Search for users </li>"+
+                    "<li class='dropdown-divider'><div class='divider'></div></li>" + 
+
+                  "</ul>" +
+                "</li>" +
+              "</ul>" +
+            "</li>");
         }
         else {
           console.log(response);

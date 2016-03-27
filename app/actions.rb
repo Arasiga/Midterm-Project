@@ -83,7 +83,7 @@ get '/Webpages/page' do
   @user.projects.each do |x|
     @user_projects << x 
   end
-  binding.pry
+  
   erb :'Webpages/page', layout: false
 end
 
