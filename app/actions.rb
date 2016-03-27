@@ -59,6 +59,12 @@ end
 get '/Webpages/page' do
   no_user_redirect
   @user = curr_user
+  
+  @user_projects = []
+  @user.projects.each do |x|
+    @user_projects << x 
+  end
+  binding.pry
   erb :'Webpages/page', layout: false
 end
 

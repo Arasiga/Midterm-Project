@@ -36,17 +36,47 @@
 
 <div class="container">
     <nav class="row">
-      <div class="col-lg-7">
+      <div class="col-lg-7 col-sm-7">
        <div class="dropdown m-b">
         <button class="btn btn-default btn-lg dropdown-toggle" type="button" data-toggle="dropdown" data-submenu>
           My Projects <span class="glyphicon glyphicon-tasks"></span>
         </button>
 
-
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu projectlist">
           <li class="dropdown-header">Project List</li>
 
-            <li class="new-project"></li>
+
+            <% @user_projects.each do |x| %>
+              <li class="dropdown-submenu"><a href=""> <%= x.name %> </a>
+                <ul class="dropdown-menu">
+                  <li class="dropdown-header"> Members </li>
+                  
+                  <% x.memberships.each do |members| %>
+                    <li><%= User.find(members.user_id.to_i).name %></li>
+                  <% end %>
+                  <li class="dropdown-divider">
+                    <div class="divider"></div>
+                  </li>
+                  <li><a href=""><button class="btn btn-success"> Go to Project! </button></a></li>
+                  <li class="dropdown-divider">
+                    <div class="divider"></div>
+                  </li>
+                  <li class="dropdown-submenu"><a href=""> Add Member </a>
+                    <ul class="dropdown-menu">
+                      <li class="dropdown-header"> Search for users </li>
+                      <li class="dropdown-divider">
+                        <div class="divider"></div>
+                      </li>
+                      <li><input type="text" name="new_member"></li>
+                      <li class="dropdown-divider">
+                        <div class="divider"></div>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li> 
+            <% end %>
+
           
             <li class="dropdown-divider">
               <div class="divider"></div>
@@ -72,7 +102,7 @@
 
       </div>
 
-      <div class="col-lg-5">
+      <div class="col-lg-5 col-sm-5">
         <ul class="nav nav-tabs" style="color:white; font-size: 20px;">  
           <li style="padding-left: 20px;"><a href="#"> About RubyPad </a></li>
           <li style="padding-left: 20px;"><a href="#"> Settings </a></li>
@@ -107,22 +137,32 @@
       });
     });
 
-    var projList = [];
+    // $(function() {
+    //   $.get('/list_projects', function(response) {
+    //     var json = JSON.parse(response);
+    //     var length = json.length;
+    //     for (var i=0; i < length; i++){
+    //       $(".projectlist").append("<li class='dropdown-submenu'>" + 
+    //         "<a href='' style='text-decoration: none;'>" +
+    //         json[i]  + 
+    //         "</a>" + 
+    //           "<ul class='dropdown-menu'>" + 
+    //             "<li class='dropdown-header'> Members </li>" +
+    //             "<li class='dropdown-divider'><div class='divider'></div></li>"+
+    //             "<li><a href=''><button class='btn btn-success'> Go to Project! </button></a></li>" + 
+    //             "<li class='dropdown-divider'><div class='divider'></div></li>"+
+    //             "<li class='dropdown-submenu'><a href=''> Add Member </a>"+
+    //               "<ul class='dropdown-menu'>"+
+    //                 "<li class='dropdown-header'> Search for users </li>"+
+    //                 "<li class='dropdown-divider'><div class='divider'></div></li>" + 
 
-    function ask_for_project_list(){
-      $.get('/list_projects', function(response) {
-
-      });
-    };
-
-    $(function(){
-
-    });
-    $(function() {
-      var res = $.get('/list_projects', function(response) {
-          console.log(response);
-        });
-    });
+    //               "</ul>" +
+    //             "</li>" +
+    //           "</ul>" +
+    //         "</li>");
+    //     }
+    //   });
+    // });
     </script>
 
 </body>
