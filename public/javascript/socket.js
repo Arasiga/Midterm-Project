@@ -61,6 +61,10 @@ function readMessage(msg) {
       send("codeInputReceive",  inputCode.getValue());
       break;
 
+    case "userList":
+      modUserList(obj.text);
+      break;
+
     default:
 
     break;
