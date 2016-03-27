@@ -19,6 +19,16 @@ function addCodeInput(msg) {
       inputCode.setValue(msg);
 }
 
+function modUserList(msg) {
+  $('#userList').html(" ");
+  var stuff = "<ul>";
+  for (var i = 0; i < msg.length; i++) {
+    stuff += "<li>" + msg[i] + "</li><br>"
+  }
+   stuff += "</ul>"
+  $('#userList').html(stuff);
+}
+
 
 
 $('#message').keypress(function(event) {

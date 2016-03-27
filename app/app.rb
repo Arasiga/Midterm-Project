@@ -51,8 +51,11 @@ EventMachine.run do
               @clients << client
               puts "new client connected"
               socket_send(client[:sock], "text", "Connected to the pad for: #{Project.find_by(id: client[:pad]).name}.")
-              @clients.each do |cli|
+              padclients = @clients.map {|cli| cli if cli[:pad] == client[:pad]}
+              padclientNames = padclients.map {|cli| cli[:user].username}
+              padclients.each do |cli|
                 socket_send( cli[:sock], "text", "#{client[:user].username.to_s} has joined the pad") if cli != client && cli[:pad] == client[:pad]
+                socket_send(cli[:sock], "userList", padclientNames)
               end
             end
           end
@@ -63,14 +66,19 @@ EventMachine.run do
     end
 
     ws.onclose do
+      # binding.pry
       client = get_client_from_param(@clients, :sock, ws)
       if (client)
+        # binding.pry
         socket_send(client[:sock], "text", "Closed")
         puts "closing"
-        @clients.each do |cli|
-            socket_send( cli[:sock], "text", "#{client[:user].username.to_s} has left the chat") if cli != client && cli[:pad] == client[:pad]
-        end
         @clients.delete(client)
+        padclients = @clients.map {|cli| cli if cli[:pad] == client[:pad]}
+        padclientNames = padclients.map {|cli| cli[:user].username}
+        padclients.each do |cli|
+            socket_send( cli[:sock], "text", "#{client[:user].username.to_s} has left the chat") 
+            socket_send(cli[:sock], "userList", padclientNames)
+        end        
       end
     end
 
