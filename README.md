@@ -5,7 +5,8 @@ Midterm
 
 Setup
 
-bundle update, bundle install
+bundle install
+rake db:migrate
 
 ===
 
@@ -13,6 +14,6 @@ Run
 
 ruby -W0 app/app.rb
 
-to stop the server, ctrl-c currently does not work.
+to stop the server, ctrl-c currently does not work with eventmachine.
 
-do ctrl-z and then kill the process (eg. killall -9 ruby)
+ctrl-z and then kill the process (eg. killall -9 ruby)
