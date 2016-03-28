@@ -90,7 +90,6 @@ EventMachine.run do
       msg = JSON.parse(msg)
       client = get_client_from_param(@clients, :sock, ws)
       if (!client)
-        binding.pry
         auth_error(ws)
       else
         puts "Received Message from #{client[:user].username.to_s}"
