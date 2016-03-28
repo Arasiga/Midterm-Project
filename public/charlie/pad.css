@@ -1,3 +1,6 @@
+*{
+	outline: none;
+}
 .mainBoxDiv{
 	height: calc(100vh - 40px);
 }
@@ -59,6 +62,9 @@
   background-image: -o-linear-gradient(top, #040e14, #031a29);
   background-image: linear-gradient(to bottom, #040e14, #031a29);
   text-decoration: none;
+}
+.inputButtons:active {
+	outline: none;
 }
 .row{
 	margin-left: 0px;
