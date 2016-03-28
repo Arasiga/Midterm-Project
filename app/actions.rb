@@ -66,13 +66,19 @@ get '/list_users' do
       Users.all.map {|x| x.name}.to_json
     when "by_project"
       proj = Project.find_by(id: params[:project_id].to_i)
-      if (!proj)
-        [].to_json
-      else
-        proj.users.map {|x| x.name}.to_json
-      end
+      user = User.find_by(id: params[:user_name].to_i)
+      user.projects << proj
+
+      # binding.pry
+      response = user.username.to_json
+      response
+      # if (!proj)
+      #   [].to_json
+      # else
+      #   proj.users.map {|x| x.name}.to_json
+      # end
     when "by_name"
-      User.all.where('lower(username) LIKE ?', "#{params[:name]}%".downcase).map {|x| x.username}.to_json
+      User.all.where('lower(username) LIKE ?', "#{params[:name]}%".downcase).map {|x| {name:x.username, id: x.id}}.to_json
     end
   end
 end

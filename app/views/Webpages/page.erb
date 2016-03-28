@@ -34,7 +34,7 @@
 <body style="background-image: url(../alex/pics/bruh.jpg); background-position: center; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover;">
 
 
-<div class="container">
+<div class="container" id="button">
     <nav class="row">
       <div class="col-lg-7 col-sm-7">
        <div class="dropdown m-b">
@@ -50,7 +50,7 @@
               <li class="dropdown-submenu"><a href=""> <%= x.name %> </a>
                 <ul class="dropdown-menu">
                   <li class="dropdown-header"> Members </li>
-                  
+                  <div id="memb"></div>
                   <% x.memberships.each do |members| %>
                     <li><%= User.find(members.user_id.to_i).username %></li>
                   <% end %>
@@ -67,10 +67,11 @@
                       <li class="dropdown-divider">
                         <div class="divider"></div>
                       </li>
-                      <li><input type="text" name="new_member"></li>
+                      <li><input type="text" name="name" id="search_user_<%=x.id%>" class="search_users"></li>
                       <li class="dropdown-divider">
                         <div class="divider"></div>
                       </li>
+                      <div class="all_users"> </div>
                     </ul>
                   </li>
                 </ul>
@@ -122,14 +123,13 @@
   </div>
   <script>
     $('#create_proj').click(function() {
-
       var res = $.get('/newproj', {user: <%=@user.id%>, name: $('#newProjName').val(), description: $('#NewProjDesc').val()}, function(response) {
       
         var project = JSON.parse(response)
  
         if (project.status == true) {
           var name = project.name
-          debugger
+          // debugger
           $("#new-project").append("<li class='dropdown-submenu'>" +
             "<a href='' style='text-decoration: none;'>" +
             name  + 
@@ -143,7 +143,7 @@
                   "<ul class='dropdown-menu'>"+
                     "<li class='dropdown-header'> Search for users </li>"+
                     "<li class='dropdown-divider'><div class='divider'></div></li>" + 
-
+                    "<li><input type='text' name='name' id='search_users'></li>" +
                   "</ul>" +
                 "</li>" +
               "</ul>" +
@@ -153,9 +153,48 @@
           console.log(response);
           $("#create").text(response);
         }
+      });
+    });
+
+  
+    $('.search_users').keyup(function(){
+
+        var obj = this;
+        var value = "#" + obj.id;
+        var search_prompt = $(value).val();
+        var result = $.get('/list_users', {filter: "by_name", name: search_prompt},  function(response) {
+       
+
+          var json = JSON.parse(response);
+          var length = json.length;
+          var arr_of_users = [];
+          var html = "";
+          // debugger;
+          for(var k=0; k< length; k++){
+            var uid = "data-user_id='" + (json[k].id).toString() + "' ";
+            var pid = "data-project_id='" + ((obj.id).toString()).split("search_user_")[1] + "' ";
+            
+            html += "<li id='add_me' "+uid+pid+">" + json[k].name + "<button class='btn btn-success' style='right: 0px;'> Add </button></li>"
+          }
+          // debugger;
+          $('.all_users').html(html);
+        });  
+    });
+
+    $('#button').on('click', '#add_me', function(){
+      
+      var proj_id = $("#add_me").data("project_id");
+      var user_to_add = $("#add_me").data("user_id");
+      
+      var res = $.get('/list_users', {filter: "by_project", project_id: proj_id.toString(), user_name: user_to_add}, function(response) {
+        var name = JSON.parse(response);
+        debugger;
+        $('#memb').html("<li>" + name + "</li>");
 
       });
     });
+
+  
 
     // $(function() {
     //   $.get('/list_projects', function(response) {
