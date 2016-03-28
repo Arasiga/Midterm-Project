@@ -6,7 +6,7 @@ class Membership < ActiveRecord::Base
   validates_presence_of :user, :project
   validates_associated :user, :project
   validate :admin_check
-
+  
 
   def no_current_admins
     self.project.memberships.reduce (true) do |no_admins, member|

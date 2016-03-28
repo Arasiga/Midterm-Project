@@ -105,9 +105,8 @@
   <script src="/javascript/socket.js"></script>
   <script src="/javascript/pad_script.js"></script>
   <script>
-    var socket, host;      
-    host = "ws://localhost:3001";
-
+    var socket;      
+    var host = <%=@host%>;
     //Entry
     $(function() {
       connect(host);

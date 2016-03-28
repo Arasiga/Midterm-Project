@@ -44,6 +44,11 @@ get '/pad/:num' do
   redirect '/invalid_project' if (!proj)
   redirect "/no_access" if !proj.users.include?(curr_user)
   session[:pad] = params[:num]
+  if @env['REMOTE_ADDR'] == "127.0.0.1"
+    @host = "ws://localhost:3001".to_json
+  else
+    @host = "ws://172.46.0.218:3001".to_json
+  end  
   erb :'Webpages/pad', :layout => false
 end
 
@@ -66,13 +71,19 @@ get '/list_users' do
       Users.all.map {|x| x.name}.to_json
     when "by_project"
       proj = Project.find_by(id: params[:project_id].to_i)
-      if (!proj)
-        [].to_json
-      else
-        proj.users.map {|x| x.name}.to_json
-      end
+      user = User.find_by(id: params[:user_name].to_i)
+      user.projects << proj
+
+      # binding.pry
+      response = user.username.to_json
+      response
+      # if (!proj)
+      #   [].to_json
+      # else
+      #   proj.users.map {|x| x.name}.to_json
+      # end
     when "by_name"
-      User.all.where('lower(username) LIKE ?', "#{params[:name]}%".downcase).map {|x| x.username}.to_json
+      User.all.where('lower(username) LIKE ?', "#{params[:name]}%".downcase).map {|x| {name:x.username, id: x.id}}.to_json
     end
   end
 end
@@ -80,6 +91,12 @@ end
 get '/Webpages/page' do
   no_user_redirect
   @user = curr_user
+  
+  @user_projects = []
+  @user.projects.each do |x|
+    @user_projects << x 
+  end
+  
   erb :'Webpages/page', layout: false
 end
 
@@ -115,6 +132,10 @@ end
 get '/Webpages/database' do
   @users = User.all
   erb :'Webpages/database'
+end
+
+get '/my_ip' do
+  @env['REMOTE_ADDR']
 end
 
 get '/newproj' do
