@@ -21,7 +21,7 @@
   <div class="container-fluid">
     <nav class="row menuBar">
       <div class="col-lg-1 col-md-1 col-sm-1 noPadding menuButton">
-        <h3 class="logo">RubyPad</h3>
+        <a href="/Webpages/page"><h3 class="logo">RubyPad</h3> </a>
       </div>
       <div class="col-lg-1 col-lg-push-8 col-md-1 col-md-push-8 col-sm-1 col-sm-push-8 hidden-xs noPadding menuButton">
         <h3 class="menuFont">Help</h3>
@@ -37,8 +37,8 @@
 
     <div class="row mainBoxDiv">
       <div class="col-lg-1 col-md-1 col-sm-1 hidden-xs noPadding maxHeight ">
-        <div class="memberBar">
-        
+        <div id="userList" class="memberBar maxHeight">
+ 
         </div>
       </div>
       <div class="col-lg-7 col-md-7 col-sm-7 noPadding maxHeight">
@@ -50,7 +50,7 @@
             <button id="runcode" class="inputButtons ">Run</button>
           </div>
           <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 noPadding center-v">
-            <button id="disconnect" class="inputButtons ">Disconnect</button>
+            <a href="/Webpages/page"> <button id="disconnect" class="inputButtons ">Disconnect</button></a>
           </div>
         </div>
         <div id="output" class="outputBoxDiv">
@@ -68,11 +68,11 @@
       </div>
     </div>
   </div>
+
    
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script>
     var inputCodeMirror = CodeMirror(document.getElementById("input"), {
-      value: "Input",
       mode:  "ruby",
       theme: "ambiance",
       lineNumbers: true,
@@ -87,7 +87,6 @@
   </script>
   <script>
     var outputCodeMirror = CodeMirror(document.getElementById("output"), {
-      value: "output",
       mode:  "ruby",
       theme: "ambiance",
       readOnly: true,
@@ -107,9 +106,8 @@
   <script src="/javascript/socket.js"></script>
   <script src="/javascript/pad_script.js"></script>
   <script>
-    var socket, host;      
-    host = "ws://localhost:3001";
-
+    var socket;      
+    var host = <%=@host%>;
     //Entry
     $(function() {
       connect(host);

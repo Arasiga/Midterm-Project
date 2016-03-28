@@ -3,16 +3,16 @@ function connect(host) {
     debugger;
     socket = new WebSocket(host);
 
-    addMessage("Socket State: " + socket.readyState);
+    addMessage("Attempting to connect...");
 
     socket.onopen = function() {
-      addMessage("Socket Status: " + socket.readyState + " (open)");
+      addMessage("Connection established.");
       send("sendCurrCode", "");
 
     }
 
     socket.onclose = function() {
-      addMessage("Socket Status: " + socket.readyState + " (closed)");
+      addMessage("Disconnected.");
     }
 
     socket.onmessage = function(msg) {
@@ -60,6 +60,10 @@ function readMessage(msg) {
 
     case "sendCurrCode":
       send("codeInputReceive",  inputCode.getValue());
+      break;
+
+    case "userList":
+      modUserList(obj.text);
       break;
 
     default:

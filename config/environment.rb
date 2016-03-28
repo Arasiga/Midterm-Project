@@ -14,6 +14,7 @@ require 'pry'
 
 APP_ROOT = Pathname.new(File.expand_path('../../', __FILE__))
 APP_NAME = APP_ROOT.basename.to_s
+SERVER_IP = "172.46.0.218"
 
 # Sinatra configuration
 configure do
@@ -24,6 +25,8 @@ configure do
   set :session_secret, ENV['SESSION_KEY'] || 'lighthouselabssecret'
 
   set :views, File.join(Sinatra::Application.root, "app", "views")
+
+  set :bind, '0.0.0.0'
 end
 
 # Set up the database and models
