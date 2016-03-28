@@ -66,10 +66,8 @@ EventMachine.run do
     end
 
     ws.onclose do
-      # binding.pry
       client = get_client_from_param(@clients, :sock, ws)
       if (client)
-        # binding.pry
         socket_send(client[:sock], "text", "Closed")
         puts "closing"
         @clients.delete(client)
@@ -110,7 +108,6 @@ EventMachine.run do
           socket_send( cli[:sock], "#{msg["type"]}", text) if cli != client && cli[:pad] == client[:pad]
         end
       when "sendCurrCode"
-        # binding.pry
         other_client =  @clients.detect {|cli| cli != client && cli[:pad] == client[:pad]}
         if other_client
           socket_send(other_client[:sock], "sendCurrCode", "")

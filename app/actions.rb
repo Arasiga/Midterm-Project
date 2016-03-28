@@ -44,6 +44,11 @@ get '/pad/:num' do
   redirect '/invalid_project' if (!proj)
   redirect "/no_access" if !proj.users.include?(curr_user)
   session[:pad] = params[:num]
+  if @env['REMOTE_ADDR'] == "127.0.0.1"
+    @host = "ws://localhost:3001".to_json
+  else
+    @host = "ws://172.46.0.218:3001".to_json
+  end  
   erb :'Webpages/pad', :layout => false
 end
 
@@ -115,6 +120,10 @@ end
 get '/Webpages/database' do
   @users = User.all
   erb :'Webpages/database'
+end
+
+get '/my_ip' do
+  @env['REMOTE_ADDR']
 end
 
 get '/newproj' do
