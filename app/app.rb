@@ -17,8 +17,11 @@ def get_client_from_param(client_list, param, obj)
 end
 
 def auth_error(sock)
-  socket_send(sock, "authError", "")
-  sock.close
+  begin
+    socket_send(sock, "authError", "")
+    sock.close
+  rescue
+  end
 end
 
 def user_connected? (user)
@@ -61,7 +64,10 @@ EventMachine.run do
           end
         end
       rescue
-        ws.close
+        begin
+          ws.close
+        rescue
+        end
       end
     end
 
@@ -84,33 +90,34 @@ EventMachine.run do
       msg = JSON.parse(msg)
       client = get_client_from_param(@clients, :sock, ws)
       if (!client)
+        binding.pry
         auth_error(ws)
-        return
-      end
-      puts "Received Message from #{client[:user].username.to_s}"
-      puts msg.inspect
-      case msg["type"]
-      when "codeRun"
-        evaluation = nil
-        begin
-          evaluation = safe_eval(msg["text"])
-        rescue
-          evaluation = "Syntax Error:"
-        end
-        @clients.each do |cli|
-            socket_send(cli[:sock], "codeOutputReceive", evaluation) if cli[:pad] == client[:pad]
-        end
-      when "text", "codeInputReceive"       
-        puts "sending message:"
-        text_prefix = msg["type"] == "text" ? "#{client[:user].username.to_s}:  " : ""
-        text = text_prefix + msg["text"]
-        @clients.each do |cli|
-          socket_send( cli[:sock], "#{msg["type"]}", text) if cli != client && cli[:pad] == client[:pad]
-        end
-      when "sendCurrCode"
-        other_client =  @clients.detect {|cli| cli != client && cli[:pad] == client[:pad]}
-        if other_client
-          socket_send(other_client[:sock], "sendCurrCode", "")
+      else
+        puts "Received Message from #{client[:user].username.to_s}"
+        puts msg.inspect
+        case msg["type"]
+        when "codeRun"
+          evaluation = nil
+          begin
+            evaluation = safe_eval(msg["text"])
+          rescue
+            evaluation = "Syntax Error:"
+          end
+          @clients.each do |cli|
+              socket_send(cli[:sock], "codeOutputReceive", evaluation) if cli[:pad] == client[:pad]
+          end
+        when "text", "codeInputReceive"       
+          puts "sending message:"
+          text_prefix = msg["type"] == "text" ? "#{client[:user].username.to_s}:  " : ""
+          text = text_prefix + msg["text"]
+          @clients.each do |cli|
+            socket_send( cli[:sock], "#{msg["type"]}", text) if cli != client && cli[:pad] == client[:pad]
+          end
+        when "sendCurrCode"
+          other_client =  @clients.detect {|cli| cli != client && cli[:pad] == client[:pad]}
+          if other_client
+            socket_send(other_client[:sock], "sendCurrCode", "")
+          end
         end
       end
     end
