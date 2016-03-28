@@ -12,7 +12,7 @@ rake db:migrate
 
 Run
 
-ruby -W0 app/app.rb
+bundle exec ruby -W0 app/app.rb
 
 to stop the server, ctrl-c currently does not work with eventmachine.
 
